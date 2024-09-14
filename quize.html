@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Quiz Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .submit {
+            display: block;
+            float: right;
+        }
+        .submit button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #4b3b0a;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .submit button:focus {
+            outline: none;
+            background-color: #e6c77b;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .submit button:hover {
+            background-color: #e6c77b;
+        }
+        .quiz-container {
+            background: #e7e7b0;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            flex: 1;
+        }
+        .quiz-title {
+            padding: 20px;
+            text-align: center;
+        }
+        .quize-content {
+            padding: 0px;
+        }
+        .quiz-question {
+            margin-left: 10px;
+            margin-right: 15px;
+        }
+        .quiz-question-content {
+            margin: 0px;
+            font-size: large;
+            font-size: 1.2em;
+        }
+        .quiz-answer {
+            padding: 0px;
+        }
+        .quiz-answer-choice {
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin: 10px;
+            display: flex;
+        }
+        .quiz-radio {
+            height: 100%;
+        }
+        .quiz-answer-detail {
+            padding-top: 5px;
+            word-wrap: break-word; /* Ensure long text wraps */
+            white-space: normal; /* Allow text to wrap */
+        }
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            margin: 10px;
+        }
+        .button-left {
+            float: left;
+        }
+        .button-right {
+            float: right;
+        }
+        .nav-row button {
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 90px;
+            color: white;
+            background-color: #4b3b0a;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .nav-row button:focus {
+            outline: none;
+            background-color: #e6c77b;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .nav-row button:hover {
+            background-color: #e6c77b;
+        }
+        /* Disabled button style */
+        .nav-row button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }     
+        .progress-container {
+            margin: 10px;
+            margin-top: 20px;
+        }
+        .progress-quiz {
+            text-align: center;
+        }
+        .progress-bar-container {
+            height: 15px;
+            background-color: #f3f3f3;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar {
+            height: 15px;
+            width: 0%;
+            background-color: #4b3b0a;
+            text-align: center;
+            line-height: 15px;
+            color: white;
+            border-radius: 25px;
+            transition: width 0.3s;
+        }
+        /* Hide the default radio button */
+        input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            margin-right: 10px;
+        }
+
+        /* Style the checked state */
+        input[type="radio"]:checked::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #007bff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* Style the checkbox */
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007bff;
+            border-radius: 4px; /* Change to 50% for rounded checkboxes */
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            margin-right: 10px;
+        }
+        
+        /* Style the checked state */
+        input[type="checkbox"]:checked::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #007bff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div id="quiz">
+            <div class="quiz-title"><h1>simple quiz application</h1></div>
+            <div class="quiz-content">
+                <div class="quiz-question"><p class="quiz-question-content"></p></div>
+                <div class="quiz-answer"></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-quiz">1/10</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar">10%</div>
+                </div>
+            </div>
+            <div class="nav-row">
+                <button class="button-left" id="previous" onclick="prevQuestion()">Previous</button>
+                <button class="button-right" id="next" onclick="nextQuestion()">Next</button>
+                <div class="submit">
+                    <button onclick="submitQuiz()">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div id="result" style="display: none;">
+            <h2>Your Score: <span id="score"></span></h2>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                multiSelection: false,
+                question: "What is the capital of France?",
+                answers: ["Berlin", "Madrid", "Paris", "Lisbon"],
+                correct: [2]
+            },
+            {
+                multiSelection: true,
+                question: "Which languages are scripts?",
+                answers: ["Python", "JavaScript", "C++", "Java"],
+                correct: [0, 1]
+            },
+            {
+                multiSelection: false,
+                question: "Which language is used for web development?",
+                answers: ["Python", "JavaScript", "C++", "Java"],
+                correct: [1]
+            },
+            {
+                multiSelection: false,
+                question: "What is 2 + 2?",
+                answers: ["3", "4", "5", "6"],
+                correct: [1]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        const quizContainer = document.getElementById('quiz');
+        const questionElement = document.querySelector('.quiz-question-content');
+        const answersElement = document.querySelector('.quiz-answer');
+        const prevButton = document.getElementById('previous');
+        const nextButton = document.getElementById('next');
+        const submitButton = document.querySelector('.submit');
+        
+        function loadQuestion() {
+            updateProgressBar();
+            const currentQuizData = quizData[currentQuestion];
+            questionElement.textContent = currentQuestion+1 + ". " + currentQuizData.question;
+            answersElement.innerHTML = '';
+            currentQuizData.answers.forEach((answer, index) => {
+                console.log(answer);
+                let quizAnswerChoice = document.createElement('div');
+                quizAnswerChoice.className = 'quiz-answer-choice';
+                answersElement.appendChild(quizAnswerChoice);
+
+                quizAnswerChoice.innerHTML = `
+                    <div class="quiz-radio">
+                        <input type="${quizData[currentQuestion].multiSelection ? "checkbox" : "radio"}" name="answer" value="${index}">
+                    </div>
+                    <div class="quiz-answer-detail">
+                        ${answer}
+                    </div>
+                `;
+            });
+            prevButton.disabled = currentQuestion === 0;
+            nextButton.style.display = currentQuestion === quizData.length - 1 ? 'none' : 'inline-block';
+            submitButton.style.display = currentQuestion === quizData.length - 1 ? 'block' : 'none';
+        }
+
+        function calculateScore(){
+            const selectedAnswers = document.querySelectorAll('input[name="answer"]:checked');
+            const selectedValues = Array.from(selectedAnswers).map(answer => parseInt(answer.value));
+            const correctAnswers = Array.isArray(quizData[currentQuestion].correct) ? quizData[currentQuestion].correct : [quizData[currentQuestion].correct];
+          
+            // Check if all selected answers are correct and no extra answers are selected
+            if (selectedValues.length === correctAnswers.length && selectedValues.every(value => correctAnswers.includes(value))) {
+              score++;
+            }
+        }
+
+        function nextQuestion() {
+            calculateScore();
+            currentQuestion++;
+            loadQuestion();
+          }
+          
+        function prevQuestion() {
+            currentQuestion--;
+            loadQuestion();
+        }
+
+        function updateProgressBar(){
+            let progressQuiz = document.querySelector('.progress-quiz');
+            let progressBar = document.querySelector('.progress-bar');
+            let percentage = Math.floor(((currentQuestion+1)/quizData.length)*100);
+            progressQuiz.innerHTML = `${currentQuestion+1}/${quizData.length}`;
+            progressBar.style.width = percentage + '%';
+            progressBar.innerHTML = percentage + '%';
+        }
+
+        function submitQuiz() {
+            calculateScore();
+            quizContainer.style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('score').textContent = `${score} / ${quizData.length}`;
+        }
+
+        const buttons = document.querySelectorAll('button');
+        // Add a blur event listener to each button
+        buttons.forEach(button => {
+            button.addEventListener('mouseout', (event) => {
+                if (!button.disabled){
+                    button.style.backgroundColor = '#4b3b0a';
+                    button.style.boxShadow = 'none';
+                }
+            });
+            button.addEventListener('mouseover', (event) => {
+                if (!button.disabled){
+                    button.style.backgroundColor = '#e6c77b';
+                }
+            });
+        });
+        loadQuestion();
+    </script>
+</body>
+</html>
